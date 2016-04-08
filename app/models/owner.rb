@@ -7,6 +7,6 @@ class Owner < ActiveRecord::Base
 
   has_many :menu_items
   has_many :orders
-  has_many :cuntomers, through: :orders
+  has_many :customers, through: :orders
   belongs_to :admin
 end

@@ -1,4 +1,5 @@
 class Order < ActiveRecord::Base
+  validates_presence_of :address, :total
   belongs_to :owner
   belongs_to :customer
   has_many :menu_item_orders

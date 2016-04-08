@@ -1,18 +1,18 @@
 source "https://rubygems.org"
 
-gem 'sinatra'
 gem 'activerecord'
 gem 'sinatra-activerecord'
+
+gem 'sinatra'
+gem 'sqlite3'
+gem 'tux'
+gem 'pry'
+gem 'pry-nav'
 gem 'rake'
+gem 'rspec'
+gem 'rack-test'
 gem 'capybara'
 gem 'rack_session_access'
 gem 'require_all'
 gem 'bcrypt'
-gem 'rack-test'
-
-group :development do
-  gem 'pry'
-  gem 'sqlite3'
-  gem 'shotgun'
-  gem 'tux'
-end
+gem 'shotgun'

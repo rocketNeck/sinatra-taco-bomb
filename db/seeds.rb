@@ -1,1 +1,5 @@
 dev = Admin.create(email: "admin", password_digest: "admin")
+own = Owner.create(name: "Bob Bobberton",email: "rocketNeck@gmail.com", city: "Fort Wayne", password_digest: "owner", payment_info: "9999-9999-8888-7777, 10/2017, 555", admin_id: 1)
+cus = Customer.create(name: "Jesse", email: "homestarflyer@gmail.com", password_digest: "customer", payment_info: "1111-9999-8888-7777, 10/2018, 444", owner_id: 1)
+mi = MenuItem.create(name: "Magic Pork", price: 8, descreption: "A blend of sweet and spicy pig created by a wizard!", img_path: "http://i47.tinypic.com/2mc981y.jpg", owner_id: 1)
+ord = Order.create(total: 0, owner_id: 1, customer_id: 1)
