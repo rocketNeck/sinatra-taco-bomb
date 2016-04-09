@@ -1,4 +1,21 @@
 <!-- have a header with order button and running total of order -->
+
+<!-- menu page
+    must render to show_order page  listing the menu items / button to submit order / button to go back to menu
+      order button
+          must add menu_items to order
+      order reset
+          must set order.total to 0 and clear all menu_items from order
+
+      list menu_items and their img description price and total prepped for the night
+
+      menu_item add button
+              have to increment order.total by menu_item.price
+              have to decrement preped menu_items by 1 for each added
+              if prepped amount = 0 don't show the add button show a "sold out" msg.
+      running total at the top of the page -->
+
+
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <div class="menu-nav col-sm-12 col-xs-12" style="background-color: yellow;">
