@@ -334,11 +334,10 @@ end
 
   post '/customers' do
     customer = Customer.find_by_email(params[:email])
-    if customer && customer.password_digest == params[:password_digest]
-      session[:id] == customer.id
-      redirect to "customers/menu/#{customer.id}"
+    if customer.password_digest == params[:password_digest]
+      session[:id] = customer.id
+      redirect to "/customers/menu/#{customer.id}"
     else
-      binding.pry
       redirect to "/customers/login"
     end
   end
@@ -348,6 +347,8 @@ end
 # menu page
   get '/customers/menu/:id' do
     if logged_in?
+      @order = current_order
+      @menu_items = MenuItem.all
       erb :'/customers/menu'
     else
       redirect to "/customers/login"
@@ -364,7 +365,7 @@ end
     end
   end
 
-# add item to order
+# add item to order##########################################################left off here
   post '/menu/:id/add' do ### add menu item to order
     if logged_in?
       current_order.add_menu_item(perams[:menu_item][:id]) #needs to be the {:id => 17} here

@@ -1,34 +1,50 @@
-<!-- <nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container">
-    <div class="menu-nav col-sm-12 col-xs-12" style="background-color: yellow;max-height: 75px;">
-      <div id="total-and-buy" class="">
-        <button type="submit" name="button">Order</button>
-      </div>
-      <div id="menu-nav-img" class="">
-        <span>a bunch of stuff</span>
-      </div>
-      <div id="total-price" class="">
-        <h1>$22</h1>
-      </div>
+<div class="container-fluid">
+
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header" style="background-color: #98012e;">
+      <form action="/menu/<%=current_order.id%>/place_order" method="post">
+        <input type="hidden" value="POST" id="hidden" name="_method">
+        <input type="submit" value"Order Now">
+      </form>
+      <div class="navbar-brand" style="font-size: 32px;color: white;">Total:</div>
+      <div class="navbar-brand" style="font-size: 32px;color: white;">$<%=@order.total%></div>
     </div>
   </div>
 </nav>
 
-<div class="wrapper clearfix" style="margin-top: 175px;">
-  <div class="list-group" style="background-color: red;"> -->
-    <!-- list a menu item -->
-    <!-- <div class="list-group-item col-lg-8 col-sm-12">
-      <section id="menu-item" class"col-sm-12 first shadow">
-        <figure>
+<div class="row" style="margin-top:70px;">
+  <% @menu_items.each do |menu_item| %>
+    <div class="col-md-6 col-sm-6">
+      <div class="panel fade in panel-default" data-init-panel="true">
+        <div class="embed-responsive embed-responsive-16by9 corner-top">
+          <img class="embed-responsive-item" src="<%=menu_item.img_path%>" alt="cover">
+          <div class="embed-overlay bg-grd-dark"></div>
+        </div>
 
-          <figcaption>
-            <span class="col-lg-2 col-xs-10 col-sm-10">food is good</span>
-            <span class="badge col-lg-2 col-xs-2 col-sm-2">45
-              :left</span>
-          </figcaption>
-        </figure>
-      </section>
+        <div class="embed-extend-item">
+          <h3 class="subhead"><small><%=menu_item.name%></small></h3>
+        </div>
+
+        <div class="panel-body">
+          <div class="row">
+            <a href="/menu/<%=menu_item.id%>/add">
+            <div class="col-xs-4 bordered-right">
+              <h5 class="text-center"><br><strong>Add!</strong></h5>
+            </div>
+            </a>
+            <div class="col-xs-4 bordered-right">
+              <h5 class="text-center"><small>Number Available</small><br><strong><%=menu_item.current_number_prepped%></strong></h5>
+            </div>
+            <div class="col-xs-4">
+              <h5 class="text-center"><small>Price</small><br><strong>$<%=menu_item.price%></strong></h5>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    <%end%>
   </div>
-</div> -->
-hi
+</div>
