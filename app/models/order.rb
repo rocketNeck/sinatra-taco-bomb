@@ -11,10 +11,10 @@ class Order < ActiveRecord::Base
     item.subtract_from_prepped
     self.menu_items.push(item)
   end
-
-  def hanging
-    Order.find_by_sql("SELECT orders.* WHERE status == "hanging" ORDER BY created_at ASC")
-  end
+  # 
+  # def hanging
+  #   self.where(status: "open" )
+  # end
 
   def reset
     self.total = 0

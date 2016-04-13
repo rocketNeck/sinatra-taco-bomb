@@ -1,1 +1,30 @@
-<h1>create owner</h1>
+<div class="wrapper" style="max-width: 60%;position: absolute;top:0;bottom: 0;left: 0;right: 0;margin: auto;">
+  <h1>Create Owner</h1>
+  <form action="/owner_create" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="name" name="name" class="form-control" id="name" placeholder="Name">
+    </div>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Email address</label>
+      <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" name="password_digest" class="form-control" id="password" placeholder="Password">
+    </div>
+
+    <div class="form-group">
+      <label for="city">City</label>
+      <input type="text" name="city" class="form-control" id="city" placeholder="City">
+    </div>
+
+    <div class="form-group">
+      <label for="payment_info">Credit Card Number</label>
+      <input type="text" name="payment_info" class="form-control" id="payment_info" placeholder="cc#">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </div>
+
+</form>
+</div>

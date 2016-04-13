@@ -9,4 +9,12 @@ class Owner < ActiveRecord::Base
   has_many :orders
   has_many :customers, through: :orders
   belongs_to :admin
+
+  def slug
+    self.username.gsub(" ", "-").downcase
+  end
+
+  def self.find_by_slug(slug)
+    self.all.find{|i| i.slug == slug}
+  end
 end

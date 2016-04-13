@@ -1,1 +1,61 @@
-<h1>list all owners</h1>
+<nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom: 70px;">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/admin/<%=current_admin.id%>">Taco Bomb!</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="/owner_create">Create Owner</a>
+        </li>
+        <li>
+          <a href="#">Some BIG TACO DATA</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="/logout">Log Out</a>
+        </li>
+      </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container-fluid -->
+</nav>
+<table class="fixed_headers table" style="margin-top: 80px;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>City</th>
+      <th>Password</th>
+      <th>CC Key</th>
+      <th>Created At</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @owners.each do |owner|%>
+    <tr>
+      <td><%=owner.name%></td>
+      <td><%=owner.email%></td>
+      <td><%=owner.city%></td>
+      <td><%=owner.password_digest%></td>
+      <td><%=owner.payment_info%></td>
+      <td><%=owner.created_at%></td>
+      <td>
+        <a href="/owner/<%=owner.id%>">view</a>
+      </td>
+    </tr>
+
+    <%end%>
+  </tbody>
+</table>

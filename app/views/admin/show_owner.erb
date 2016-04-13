@@ -1,1 +1,74 @@
-<h1>show indiviual owner info</h1>
+<nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom: 70px;">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/admin/<%=current_admin.id%>">Taco Bomb!</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active">
+          <a href="/owner_create">Create Owner</a>
+        </li>
+        <li>
+          <a href="#">Some BIG TACO DATA</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="/logout">Log Out</a>
+        </li>
+      </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container-fluid -->
+</nav>
+<div style="margin-top: 70px;">
+  <h1>Name:
+    <%=@owner.name%></h1>
+    <form action="/owner/<%=@owner.id%>/delete" method="post">
+      <input type="hidden" value="DELETE" id="hidden" name="_method">
+      <input class="btn btn-default" type="submit" value="Delete" id="submit">
+      <a class="btn btn-default" href="/edit_owner/<%=@owner.id%>">Edit</a>
+    </form>
+  <p>Email:
+    <%=@owner.email%></p>
+  <p>City:
+    <%=@owner.city%></p>
+  <p>Start:
+    <%=@owner.created_at%></p>
+  <p>Admin Id:
+    <%=@owner.admin_id%></p>
+  <ul>
+    <h2>List Customers</h2>
+    <% @customers.each do |customer| %>
+    <li>
+      <h3>Customer Name:
+        <%=customer.name%></h3>
+    </li>
+    <ul>
+      <li>Contact:
+        <%=customer.email%>
+      </li>
+      <li>Signed up:
+        <%=customer.created_at%>
+      </li>
+      <% customer.orders.all.each do |order|%>
+      <ul>
+        <li style="color: green;">
+          Order Total: <%=order.total%>
+        </li>
+      </ul>
+      <%end%>
+  </ul>
+  <%end%>
+</ul>
+</div>

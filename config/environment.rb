@@ -11,5 +11,5 @@ ActiveRecord::Base.establish_connection(
 )
 
 configure :development do
-  set :datavase, "sqlite3:db/#{ENV['SINATRA_ENV']}.db"
+  set :database, "sqlite3:db/#{ENV['SINATRA_ENV']}.db"
 end

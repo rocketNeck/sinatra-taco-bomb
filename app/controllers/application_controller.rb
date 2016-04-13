@@ -1,4 +1,5 @@
 require './config/environment'
+
 class ApplicationController < Sinatra::Base
   extend Helper
   include Helper
@@ -26,10 +27,10 @@ class ApplicationController < Sinatra::Base
   end
   ### chicken or the egg? the first admin is me and only i can create new admins directly at the database
   post '/admin/login' do
-     @admin = Admin.find_by(params)
-     if @admin && @admin.authenticate(params[:password])
+     @admin = Admin.find_by_email(params[:email])
+     if @admin && @admin.password_digest == params[:password_digest]
        session[:id] = @admin.id
-       redirect to "/admin/admin_dashboard"
+       redirect to "/admin/#{current_admin.id}"
      else
        redirect to "/admin"
      end
@@ -38,6 +39,7 @@ class ApplicationController < Sinatra::Base
 #render admin dashboard
   get '/admin/:id' do
     if logged_in?
+      @admin = current_admin
       @owners = Owner.all
       erb :'/admin/admin_dashboard'
     else
@@ -45,18 +47,18 @@ class ApplicationController < Sinatra::Base
     end
   end
 
-  get '/admin/owner_show' do
+  get '/owner/:id' do
     if logged_in?
-      @owner = Owner.find(id: perams[:id])
-      erb :'/admin/show_owner'
+      @owner = Owner.find_by_id(params[:id])
+      @customers = @owner.customers.all
+     erb :"/admin/show_owner"
     else
-      redirect to "/admin"
+      redirect to '/admin'
     end
   end
 
-
 ################################create an owner
-  get '/admin/owner_create' do
+  get '/owner_create' do
     if logged_in?
       erb :'/admin/create_owner'
     else
@@ -64,31 +66,54 @@ class ApplicationController < Sinatra::Base
     end
   end
 
-  post '/admin/owner_create' do
+  post '/owner_create' do
     if logged_in?
       owner = Owner.create(params)
+      owner.admin_id = current_admin.id
       redirect to "/admin/#{current_admin.id}"
     else
       redirect to "/admin/login"
     end
   end
-################################
-  get '/admin/owner_edit/:id' do
+  ## working with the idea of uploading files to my public/img file
+  # if params[:file]
+  #   filename = params[:file][:filename]
+  #   tempfile = params[:file][:tempfile]
+  #   target = "public/img/#{filename}"
+  #   File.open(target, 'wb') {|f| f.write tempfile.read }
+  #owner.img_path = "public/img/#{filename}"
+  # end
+
+################################ edit owner
+  get '/edit_owner/:id' do
     if logged_in?
-      @owner = Owner.find(id: params[:id])
+      @owner = Owner.find_by_id(params[:id])
       erb :'/admin/edit_owner'
     else
       redirect to "/admin"
     end
   end
-  post '/admin/owner_edit/:id' do
+
+  post '/edit_owner/:id' do
     if logged_in?
-      owner = Owner.find_by(id: params[:id])
-      owner.update(params)
+      owner = Owner.find_by_id(params[:id])
+      owner.update(
+        name: params[:name],
+        email: params[:email],
+        password_digest: params[:password_digest],
+        city: params[:city],
+        payment_info: params[:payment_info]
+        )
       redirect to "/admin/#{current_admin.id}"
     else
       redirect to "/admin"
     end
+  end
+
+  delete '/owner/:id/delete' do
+    owner = Owner.find_by_id(params[:id])
+    owner.delete
+    redirect to "/admin/#{current_admin.id}"
   end
 
 
@@ -104,14 +129,14 @@ class ApplicationController < Sinatra::Base
 
 
 ############ owner sales page ########
-get '/owners' do       #####link here from franchise opritunities link on home page
+get '/owners/welcome' do       #####link here from franchise opritunities link on home page
   ##this sales page should also have contact and email to submit to parent company
   erb :'/owners/welcome'
 end
-###### owner log in flow #######3
+##### owner log in flow #######3
 
 
-  get '/owners/login' do  #link here from owners welcome sales page
+  get '/login' do  #link here from owners welcome sales page
     if logged_in?
       redirect to "/owners/#{current_owner.id}"
     else
@@ -119,13 +144,17 @@ end
     end
   end
 
-  post '/owners/login' do
+  post '/owners' do
     if !logged_in?
-      @owner = Owner.find_by(email: params[:email]).authenticate(params[:password])
-      session[:id] = @owner.id
-      redirect to "/owners/#{@owner.id}"
+      @owner = Owner.find_by_email(params[:email])
+      if @owner && @owner.password_digest == params[:password_digest]
+        session[:id] = @owner.id
+        redirect to "/owners/#{current_owner.id}"
+      else
+        redirect to "/login"
+      end
     else
-      redirect to "/owners/login"
+      redirect to "/login"
     end
   end
 
@@ -135,18 +164,18 @@ end
 ################################################ owners_dashboard
 #render list of orders and links to other parts of the UI
   get '/owners/:id' do
-    if logged_in? && current_owner
+    if logged_in?
       @owner = current_owner
-      @orders = Order.hanging
-      erb :'/owners/owners_dashboard'
+      @owner.orders.where(status: "open")
+      erb :'/owners/owner_dashboard'
     else
-      redirect to "/owners/login"
+      redirect to "/login"
     end
   end
 
 # mark a order closed button
   post '/owners/:id/closed' do
-    if logged_in? && current_owner
+    if logged_in?
       @order = Order.find(id: params[:id], owner_id: current_owner.id)
       @order.status = "closed"
       redirect to "/owners/:id"
@@ -157,7 +186,7 @@ end
 #####################################################
 #render list of menu items
   get '/owners/:id/menu_items' do #link here form dashboard
-    if logged_in? && current_owner
+    if logged_in?
       @menu_items = MenuItem.where(owner_id: current_owner.id)
       erb :'/owners/menu_items'
     else
@@ -167,7 +196,7 @@ end
 ###############################################################
 #render an individual menu item
   get '/owners/:id/menu_item_show/:id' do
-    if logged_in? && current_owner
+    if logged_in?
       @menu_item = MenuItem.find(id: params[:id])
       erb :'/owners/menu_item_show'
     else
@@ -177,12 +206,11 @@ end
 
 # add or subtract the amount of prepped for this menu item
   post '/owners/:id/menu_item_show/:id' do
-    if logged_in? && current_owner
+    if logged_in?
       menu_item = MenuItem.find(id: perams[:id])
       if params[:add]
         menu_item.add_to_prepped(params[:add])
-      end
-      if params[:sub]
+      elsif params[:sub]
         menu_item.subtract_from_prepped(params[:sub])
       end
       redirect to "/owners/#{current_owner.id}/menu_items"
@@ -192,20 +220,18 @@ end
   end
 #delet this menu_item
   post '/owners/:id/menu_item_show/:id/delete' do
-    if logged_in? && current_owner
+    if logged_in?
       menu_item = MenuItem.find(params[:id], owner_id: current_owner.id)
-      if menu_item.owner_id == current_owner.id
-        menu_item.destroy
-      end
+      menu_item.destroy unless menu_item.owner_id != current_owner.id
       redirect to "/owner/#{current_owner.id}/menu_items"
     else
       redirect to "/owner/login"
     end
   end
-###############################################################
+##############################################################
 # render edit a menu item by id
-  get '/owners/:id/edit_menu_item'
-    if logged_in? && current_owner
+  get '/owners/:id/edit_menu_item' do
+    if logged_in?
       @menu_item = MenuItem.find_by(id: perams[:id])
       erb :'/owners/menu_items_edit'
     else
@@ -247,6 +273,7 @@ end
     end
   end
 ############################################################
+
   get '/owners/:id/customers' do
     if logged_in? && current_owner
       @customers = Customer.where(owner_id: current_owner.id)
@@ -267,8 +294,8 @@ end
   ############################################################
 #render old orders
   get '/owners/:id/orders' do
-    if logged_id?
-      @orders = Order.find_by_sql("SELECT orders.* WHERE status == "closed" ORDER BY created_at DESC")
+    if logged_in?
+      @orders = Order.find_by_sql("SELECT orders.* WHERE status == 'closed' ORDER BY created_at DESC")
       erb :'/owners/orders_list'
     else
       redirect to "/owners/login"
@@ -279,15 +306,16 @@ end
 
 ###### customer sing up flow #####
 
-  get '/customers/signup' do#link from welcome page links here
+  get '/customers/signup' do #linked here from welcome page
     if !logged_in?
       erb :'/customers/signup'
     else
-      redirect to "/menu/#{session[:id]}"
+      redirect to "/menu/#{current_customer.id}"
     end
   end
-  post '/customers/singup' do ######be sure to check to make sure the params aren't empty
-    customer = Customer.create(params[:customer])
+
+  post '/customers/singup' do
+    customer = Customer.create()
     owner = Owner.find_by(params[:city])
     order = Order.create(total: 0, owner_id: owner.id, customer_id: customer.id)
     customer.orders <<  order
@@ -296,34 +324,30 @@ end
   end
 
 ############## customer log in ######################
-  get '/customers/login' do#linked here from welcome page
+  get '/customers/login' do #linked here from welcome page
     if !logged_in?
       erb :'/customers/login'
     else
-      redirect to "/menu/#{session[:id]}"
+      redirect to "/menu/#{current_customer.id}"
     end
   end
-  post '/customers/login' do
-    @customer = Customer.find_by(params)
-    if @customer && @customer.authenticate(params[:password])
-      session[:id] == @customer.id
-      redirect to "/menu/#{@customer.id}"
+
+  post '/customers' do
+    customer = Customer.find_by_email(params[:email])
+    if customer && customer.password_digest == params[:password_digest]
+      session[:id] == customer.id
+      redirect to "customers/menu/#{customer.id}"
     else
+      binding.pry
       redirect to "/customers/login"
     end
   end
 
-
 ######### customer controll flow ############
 
 # menu page
-
-#must render to show_order page  listing the menu items / button to submit order / button to go back to menu
-  get '/menu/:id' do
+  get '/customers/menu/:id' do
     if logged_in?
-      @customer = current_customer
-      @menu_items = MenuItem.find_by_sql("SELECT menu_items.* WHERE current_number_prepped > 0 ORDER BY current_number_prepped DESC")
-      @order = current_order
       erb :'/customers/menu'
     else
       redirect to "/customers/login"
