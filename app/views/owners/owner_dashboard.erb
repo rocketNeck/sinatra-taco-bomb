@@ -15,10 +15,10 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li>
-          <a href="/menu_item_create">Create Menu Item</a>
+          <a href="/owners/<%=current_owner.id%>/create_new_menu_item">Create Menu Item</a>
         </li>
         <li>
-          <a href="#">Some BIG TACO DATA</a>
+          <a href="/owners/<%=current_owner.id%>/menu_items">Your Menu Items</a>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -31,9 +31,24 @@
   </div>
   <!-- /.container-fluid -->
 </nav>
-<div style="margin-top: 70px;">
-<h1>list all hanging orders have a header with links to other see /customers / menu items / all orders/ home/</h1>
-<a href="/logout">Log Out</a>
-
-
+<div>
+  <div style="margin-top: 70px;">
+    <ul>
+      <% @orders.each do |order| %>
+        <li>
+          <h3><%=order.created_at%></h3>
+            <ul>
+              <%order.menu_items.each do |menu_item|%>
+                <li><%=menu_item.name%></li>
+              <%end%>
+            </ul>
+            <%=order.customer.name%>  /  <%=order.address%>
+            <form action="/owners/<%=order.id%>/close" method="post">
+              <input type="hidden" value="PATCH" id="hidden" name="_method">
+              <input type="submit" name="close" value="close">
+            </form>
+        </li>
+      <%end%>
+    </ul>
+  </div>
 </div>

@@ -75,3 +75,15 @@ order_status = ['closed', "pending", "open"]
     address: order_address[i]
     )
 end
+
+3.times do |i|
+  m = MenuItem.all.sample
+  o = Order.create(
+  total: 11,
+  owner_id: 1,
+  customer_id: 1,
+  status: "open",
+  address: "3452 sss"
+  )
+  o.menu_items << m
+end

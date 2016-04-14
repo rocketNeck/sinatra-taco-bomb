@@ -1,1 +1,101 @@
-<h1>form for creeating a new menu item</h1>
+<nav class="navbar navbar-inverse navbar-fixed-top" style="margin-bottom: 70px;">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/owners/<%=current_owner.id%>">Taco Bomb! <%=current_owner.name%></a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="/owners/<%=current_owner.id%>/create_new_menu_item">Create Menu Item</a>
+        </li>
+        <li>
+          <a href="/owners/<%=current_owner.id%>/menu_items">Your Menu Items</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="/logout">Log Out</a>
+        </li>
+      </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container-fluid -->
+</nav>
+<div class="bootstrap-iso" style="margin-top:70px;">
+ <div class="container-fluid">
+  <div class="row">
+   <div class="col-md-6 col-sm-6 col-xs-12">
+    <form method="post" action="/create_new_menu_item">
+     <div class="form-group ">
+      <label class="control-label requiredField" for="name">
+       Name
+       <span class="asteriskField">
+        *
+       </span>
+      </label>
+      <input class="form-control" id="name" name="name" type="text"/>
+     </div>
+     <div class="form-group ">
+      <label class="control-label requiredField" for="price">
+       Price
+       <span class="asteriskField">
+        *
+       </span>
+      </label>
+      <input class="form-control" id="price" name="price" type="text"/>
+     </div>
+     <div class="form-group ">
+      <label class="control-label requiredField" for="description">
+       Description
+       <span class="asteriskField">
+        *
+       </span>
+      </label>
+      <textarea class="form-control" cols="40" id="description" name="description" rows="10"></textarea>
+      <span class="help-block" id="hint_message">
+       under 100 characters
+      </span>
+     </div>
+     <div class="form-group ">
+      <label class="control-label requiredField" for="url">
+       IMG URL
+       <span class="asteriskField">
+        *
+       </span>
+      </label>
+      <input class="form-control" id="url" name="img_path" type="text"/>
+      <span class="help-block" id="hint_url">
+       paste url of img from flickr
+      </span>
+     </div>
+     <div class="form-group ">
+      <label class="control-label requiredField" for="number_prepped">
+       Current Number Prepped?
+       <span class="asteriskField">
+        *
+       </span>
+      </label>
+      <input class="form-control" id="number_prepped" name="current_number_prepped" type="text"/>
+     </div>
+     <div class="form-group">
+      <div>
+       <button class="btn btn-primary " name="submit" type="submit">
+        Submit
+       </button>
+      </div>
+     </div>
+    </form>
+   </div>
+  </div>
+ </div>
+</div>

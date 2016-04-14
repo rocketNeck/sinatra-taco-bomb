@@ -1,1 +1,10 @@
-<h1>here we see the a unique menu item</h1>
+<h1><%=@menu_item.name%></h1>
+<h2>$<%=@menu_item.price%>.00</h2>
+<h3><%=@menu_item.description%></h3>
+<img src="<%=@menu_item.img_path%>"/>
+
+<form action="/owners/menu_item_show/<%=@menu_item.id%>/delete" method="post">
+  <input type="hidden" value="DELETE" id="hidden" name="_method">
+  <input class="btn btn-default" type="submit" value="Delete" id="submit">
+  <a class="btn btn-default" href="/owners/<%=current_owner.id%>/edit_menu_item/<%=@menu_item.id%>">Edit</a>
+</form>

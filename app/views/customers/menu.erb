@@ -26,15 +26,20 @@
 
         <div class="embed-extend-item">
           <h3 class="subhead"><small><%=menu_item.name%></small></h3>
+          <p><%=menu_item.description%>
         </div>
 
         <div class="panel-body">
           <div class="row">
-            <a href="/menu/<%=menu_item.id%>/add">
+            <!-- <a href="/menu/<%=menu_item.id%>/add"> -->
             <div class="col-xs-4 bordered-right">
-              <h5 class="text-center"><br><strong>Add!</strong></h5>
+              <!-- <h5 class="text-center"><br><strong>Add!</strong></h5> -->
+              <form method="post" action="/add_menu_item">
+                <input type="hidden" name="menu_item_id" value="<%=menu_item.id%>">
+                <input class='btn btn-primary' type='submit' value='Add!'>
+              </form>
             </div>
-            </a>
+            <!-- </a> -->
             <div class="col-xs-4 bordered-right">
               <h5 class="text-center"><small>Number Available</small><br><strong><%=menu_item.current_number_prepped%></strong></h5>
             </div>
