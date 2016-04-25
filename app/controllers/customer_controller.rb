@@ -12,16 +12,18 @@ class CustomerController < ApplicationController
   end
 
   post '/signup' do
-    customer = Customer.find_or_create_by(
+    customer = Customer.new(
       name: params[:name],
       email: params[:email],
-      password_digest: params[:password_digest],
+      password: params[:password],
       city: params[:city],
       payment_info: params[:payment_info]
     )
+
+    customer.owners.build(Owner.find_by(city: params[:city]) ###########directly associated the owner and order
+    customer.orders.build(Order.create(total: 0,address: "not defined",status: "pending",owner: owner))
+    customer.save
     session[:id] = customer.id
-    owner = Owner.find_by(city: params[:city])
-    order = Order.create(total: 0,address: "not defined",customer: current_customer,status: "pending",owner: owner)
     redirect to "/customers/menu/#{customer.id}"
   end
 
@@ -36,7 +38,7 @@ class CustomerController < ApplicationController
 
   post '/customers' do
     customer = Customer.find_by_email(params[:email])
-    if customer.password_digest == params[:password_digest]
+    if customer && customer.authenticate(params[:password])
       session[:id] = customer.id
       redirect to "/customers/menu/#{customer.id}"
     else
@@ -49,10 +51,11 @@ class CustomerController < ApplicationController
 # menu page
   get '/customers/menu/:id' do
     if logged_in?
-      @menu_items = MenuItem.all############### would have to be changed to represent only the MenuItems of the owner for the current customer
+      @menu_items = current_customer.owners.menuitems.all ##### refactored here
       if current_order.status  != "pending"
-        owner = Owner.find_by(city: current_customer.city)
-        @order = Order.create(total: 0,address: "not defined",customer: current_customer,status: "start",owner: owner)#### needs feature to add address check based on location OR input
+        owner = current_customer.owners.find_by(city: current_customer.city) ##### refactor here
+        @order = current_customer.orders.build(total: 0,address: "not defined",status: "start",owner: owner)#### needs feature to add address check based on location OR input
+        current_customer.save
         erb :'/customers/menu'
       else
         @order = current_order
@@ -132,7 +135,7 @@ class CustomerController < ApplicationController
    if logged_in?
      erb :'/customers/desplay_thank_you'
    else
-     redirect to "/customers/login"
+     redirect to "/logout"
    end
  end
 

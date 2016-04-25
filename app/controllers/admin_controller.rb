@@ -5,9 +5,9 @@ class AdminController < ApplicationController
   end
   ### chicken or the egg? the first admin is me and only i can create new admins directly at the database
   post '/admin/login' do
-     @admin = Admin.find_by_email(params[:email])
-     if @admin && @admin.password_digest == params[:password_digest]
-       session[:id] = @admin.id
+     admin = Admin.find_by_email(params[:email])
+     if admin && admin.authenticate(params[:password])  #### used propper auth
+       session[:id] = admin.id
        redirect to "/admin/#{current_admin.id}"
      else
        redirect to "/admin"

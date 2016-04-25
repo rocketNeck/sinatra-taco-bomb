@@ -15,9 +15,9 @@ end
 
   post '/owners' do
     if !logged_in?
-      @owner = Owner.find_by_email(params[:email])
-      if @owner && @owner.password_digest == params[:password_digest]
-        session[:id] = @owner.id
+      owner = Owner.find_by_email(params[:email])
+      if owner && owner.authenticate(params[:password]) ########refactored with propper password auth
+        session[:id] = owner.id
         redirect to "/owners/#{current_owner.id}"
       else
         redirect to "/login"
